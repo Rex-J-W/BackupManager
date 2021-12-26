@@ -93,6 +93,7 @@ namespace BackupManager
             startTime = DateTime.Now;
             itemCount = 0;
             operatedCount = 0;
+            exceptionId = 0;
             backupButton.Enabled = false;
             manualBackupButton.Enabled = false;
             cleanButton.Enabled = false;
@@ -181,6 +182,7 @@ namespace BackupManager
             startTime = DateTime.Now;
             itemCount = 0;
             operatedCount = 0;
+            exceptionId = 0;
             backupButton.Enabled = false;
             manualBackupButton.Enabled = false;
             cleanButton.Enabled = false;
@@ -311,6 +313,7 @@ namespace BackupManager
             startTime = DateTime.Now;
             itemCount = 0;
             operatedCount = 0;
+            exceptionId = 0;
             backupButton.Enabled = false;
             manualBackupButton.Enabled = false;
             cleanButton.Enabled = false;
