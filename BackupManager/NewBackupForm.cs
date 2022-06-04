@@ -329,42 +329,46 @@ namespace BackupManager
                 statusMsg = "Searching";
                 itemCount++;
                 string srcDir = dir.Replace(backupDest, backupSrc);
-                if (!Directory.Exists(srcDir))
+                try
                 {
-                    statusMsg = "Deleting";
-                    foreach (string file in Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories))
+                    if (!Directory.Exists(srcDir))
                     {
-                        if (state == State.Stopped) break;
-                        while (state == State.Paused) await Task.Delay(1);
-                        itemCount++;
-                        operatedCount++;
-                        await Task.Delay(1);
-                        File.Delete(file);
-                    }
-                    int subDirs = Directory.GetFileSystemEntries(dir, "*", SearchOption.AllDirectories).Length;
-                    operatedCount += subDirs;
-                    itemCount += subDirs;
-                    operatedCount++;
-                    Directory.Delete(dir, true);
-                    await Task.Delay(1);
-                }
-                else
-                {
-                    foreach (string file in Directory.EnumerateFiles(dir, "*", SearchOption.TopDirectoryOnly))
-                    {
-                        if (state == State.Stopped) break;
-                        while (state == State.Paused) await Task.Delay(1);
-                        statusMsg = "Searching";
-                        itemCount++;
-                        if (!File.Exists(file.Replace(backupDest, backupSrc)))
+                        statusMsg = "Deleting";
+                        foreach (string file in Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories))
                         {
-                            statusMsg = "Deleting";
+                            if (state == State.Stopped) break;
+                            while (state == State.Paused) await Task.Delay(1);
+                            itemCount++;
                             operatedCount++;
                             await Task.Delay(1);
                             File.Delete(file);
                         }
+                        int subDirs = Directory.GetFileSystemEntries(dir, "*", SearchOption.AllDirectories).Length;
+                        operatedCount += subDirs;
+                        itemCount += subDirs;
+                        operatedCount++;
+                        Directory.Delete(dir, true);
+                        await Task.Delay(1);
+                    }
+                    else
+                    {
+                        foreach (string file in Directory.EnumerateFiles(dir, "*", SearchOption.TopDirectoryOnly))
+                        {
+                            if (state == State.Stopped) break;
+                            while (state == State.Paused) await Task.Delay(1);
+                            statusMsg = "Searching";
+                            itemCount++;
+                            if (!File.Exists(file.Replace(backupDest, backupSrc)))
+                            {
+                                statusMsg = "Deleting";
+                                operatedCount++;
+                                await Task.Delay(1);
+                                File.Delete(file);
+                            }
+                        }
                     }
                 }
+                catch (Exception ex) { ExceptionHandler(ex); }
                 await Task.Delay(1);
             }
 
