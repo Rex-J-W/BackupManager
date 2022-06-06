@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,7 +19,10 @@ namespace BackupManager
         public readonly static string backupSrc = @"D:\";
         public readonly static string backupDest = @"R:\RexsPCBackup\";
         public readonly static string settingsFileRel = @"\settings.txt";
-        public const int exceptionCount = 10;
+        public readonly static string exceptionReports = @"\Exceptions\";
+        public const int exceptionCount = 20;
+
+        private readonly string entireReportDir = string.Empty;
 
         private State state = State.Stopped;
         private string selectedSrc = string.Empty;
@@ -29,7 +33,7 @@ namespace BackupManager
         public static int operatedCount = 0;
         public static DateTime startTime;
         public static float progress = 0f;
-        public static string currentDir = string.Empty;
+        public static string curDir = string.Empty;
         public static List<string> noGoDirs = new List<string>();
         public static List<string> topDirList = new List<string>();
         public static List<string> exceptions = new List<string>();
@@ -53,6 +57,9 @@ namespace BackupManager
                 topDirList.Add(dirs[i]);
                 directoryList.Items.Add(dirs[i].Replace(backupSrc, string.Empty), savedDirs.Contains(dirs[i]));
             }
+
+            entireReportDir = Directory.GetCurrentDirectory() + exceptionReports;
+            if (!Directory.Exists(entireReportDir)) Directory.CreateDirectory(entireReportDir);
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -65,7 +72,7 @@ namespace BackupManager
                     speedLabel.Text = "Speed: " +
                         Math.Round(itemCount / DateTime.Now.Subtract(startTime).TotalSeconds, 1) +
                         " items per second";
-                dirLabel.Text = currentDir;
+                dirLabel.Text = curDir.Replace(backupSrc, string.Empty).Replace(backupDest, string.Empty);
                 string exceptionText = "Exceptions:";
                 for (int i = 0; i < exceptions.Count; i++)
                     exceptionText += "\n" + exceptions[i];
@@ -99,7 +106,7 @@ namespace BackupManager
             cleanButton.Enabled = false;
 
             selectedSrc = backupSrc;
-            currentDir = backupSrc;
+            curDir = backupSrc;
 
             string[] subDirs = Directory.GetDirectories(selectedSrc);
             for (int i = 0; i < subDirs.Length; i++)
@@ -123,7 +130,7 @@ namespace BackupManager
                             {
                                 statusMsg = "Copying";
                                 await Task.Delay(1);
-                                File.Copy(file, destFile);
+                                File.Copy(file, destFile, true);
                                 operatedCount++;
                             }
                         }
@@ -135,7 +142,7 @@ namespace BackupManager
                     {
                         if (state == State.Stopped) break;
                         while (state == State.Paused) await Task.Delay(1);
-                        currentDir = dir;
+                        curDir = dir;
                         statusMsg = "Searching";
                         itemCount++;
                         string destDir = dir.Replace(backupSrc, backupDest);
@@ -158,7 +165,7 @@ namespace BackupManager
                                 {
                                     statusMsg = "Copying";
                                     await Task.Delay(1);
-                                    File.Copy(file, destFile);
+                                    File.Copy(file, destFile, true);
                                     operatedCount++;
                                 }
                             }
@@ -193,7 +200,7 @@ namespace BackupManager
                 folderDialog.SelectedPath.Contains(backupSrc))
             {
                 selectedSrc = folderDialog.SelectedPath + "\\";
-                currentDir = folderDialog.SelectedPath + "\\";
+                curDir = folderDialog.SelectedPath + "\\";
                 string destDir = selectedSrc.Replace(backupSrc, backupDest);
                 if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
 
@@ -210,7 +217,7 @@ namespace BackupManager
                         {
                             statusMsg = "Copying";
                             await Task.Delay(1);
-                            File.Copy(file, destFile);
+                            File.Copy(file, destFile, true);
                             operatedCount++;
                         }
                     }
@@ -229,7 +236,8 @@ namespace BackupManager
                         if (!Directory.Exists(subDestDir)) Directory.CreateDirectory(subDestDir);
                         try
                         {
-                            foreach (string file in Directory.EnumerateFiles(subDirs[i], "*", SearchOption.TopDirectoryOnly))
+                            foreach (string file in Directory.EnumerateFiles(subDirs[i], "*", 
+                                SearchOption.TopDirectoryOnly))
                             {
                                 if (state == State.Stopped) break;
                                 while (state == State.Paused) await Task.Delay(1);
@@ -240,7 +248,7 @@ namespace BackupManager
                                 {
                                     statusMsg = "Copying";
                                     await Task.Delay(1);
-                                    File.Copy(file, destFile);
+                                    File.Copy(file, destFile, true);
                                     operatedCount++;
                                 }
                             }
@@ -248,11 +256,12 @@ namespace BackupManager
                         catch (Exception ex) { ExceptionHandler(ex); }
                         await Task.Delay(1);
 
-                        foreach (string dir in Directory.EnumerateDirectories(subDirs[i], "*", SearchOption.AllDirectories))
+                        foreach (string dir in Directory.EnumerateDirectories(subDirs[i], "*", 
+                            SearchOption.AllDirectories))
                         {
                             if (state == State.Stopped) break;
                             while (state == State.Paused) await Task.Delay(1);
-                            currentDir = dir;
+                            curDir = dir;
                             statusMsg = "Searching";
                             itemCount++;
                             destDir = dir.Replace(backupSrc, backupDest);
@@ -264,7 +273,8 @@ namespace BackupManager
                                     operatedCount++;
                                 }
 
-                                foreach (string file in Directory.EnumerateFiles(dir, "*", SearchOption.TopDirectoryOnly))
+                                foreach (string file in Directory.EnumerateFiles(dir, "*", 
+                                    SearchOption.TopDirectoryOnly))
                                 {
                                     if (state == State.Stopped) break;
                                     while (state == State.Paused) await Task.Delay(1);
@@ -275,7 +285,7 @@ namespace BackupManager
                                     {
                                         statusMsg = "Copying";
                                         await Task.Delay(1);
-                                        File.Copy(file, destFile);
+                                        File.Copy(file, destFile, true);
                                         operatedCount++;
                                     }
                                 }
@@ -294,14 +304,13 @@ namespace BackupManager
             state = State.Stopped;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool CanCopyFile(string srcFile, string destFile)
         {
             if (Path.GetExtension(srcFile) == ".dll") return false;
             if (File.Exists(destFile))
             {
-                FileInfo srcInfo = new FileInfo(srcFile),
-                        destInfo = new FileInfo(destFile);
-                if (srcInfo.Length != destInfo.Length) return true;
+                if (new FileInfo(srcFile).Length != new FileInfo(destFile).Length) return true;
                 else return false;
             }
             else return true;
@@ -319,13 +328,13 @@ namespace BackupManager
             cleanButton.Enabled = false;
 
             selectedSrc = backupDest;
-            currentDir = backupDest;
+            curDir = backupDest;
 
             foreach (string dir in Directory.EnumerateDirectories(selectedSrc, "*", SearchOption.AllDirectories))
             {
                 if (state == State.Stopped) break;
                 while (state == State.Paused) await Task.Delay(1);
-                currentDir = dir;
+                curDir = dir;
                 statusMsg = "Searching";
                 itemCount++;
                 string srcDir = dir.Replace(backupDest, backupSrc);
@@ -395,13 +404,35 @@ namespace BackupManager
 
         private void StopButton_Click(object sender, EventArgs e) => state = State.Stopped;
 
-        private void DirLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => Process.Start(currentDir);
+        private void DirLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (Directory.Exists(curDir)) Process.Start(curDir);
+        }
 
         private void ExceptionHandler(Exception e)
         {
             exceptions.Insert(0, exceptionId + ": " + e.GetType().Name);
             if (exceptions.Count > exceptionCount) exceptions.RemoveAt(exceptions.Count - 1);
             exceptionId++;
+
+            string dir = entireReportDir + e.GetType().Name,
+                file = dir + "\\Num_" + exceptionId + ".txt";
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            File.WriteAllText(file, e.HelpLink + "\n\n\n" + e.Message + "\n\n\n" + e.Source + "\n\n\n" + e.StackTrace);
+        }
+
+        private void ClearExceptions_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists(entireReportDir))
+            {
+                foreach (string file in Directory.EnumerateFiles(entireReportDir, "*", SearchOption.AllDirectories))
+                    File.Delete(file);
+            }
+        }
+
+        private void ViewExceptions_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists(entireReportDir)) Process.Start(entireReportDir);
         }
 
     }

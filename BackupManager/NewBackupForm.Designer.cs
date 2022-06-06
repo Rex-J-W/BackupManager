@@ -32,6 +32,8 @@ namespace BackupManager
             this.components = new System.ComponentModel.Container();
             this.directoryList = new System.Windows.Forms.CheckedListBox();
             this.optionsBox = new System.Windows.Forms.GroupBox();
+            this.viewExceptions = new System.Windows.Forms.Button();
+            this.clearExceptions = new System.Windows.Forms.Button();
             this.stopButton = new System.Windows.Forms.Button();
             this.pauseButton = new System.Windows.Forms.Button();
             this.manualBackupButton = new System.Windows.Forms.Button();
@@ -40,12 +42,12 @@ namespace BackupManager
             this.excludeLabel = new System.Windows.Forms.Label();
             this.dirLabel = new System.Windows.Forms.LinkLabel();
             this.infoBox = new System.Windows.Forms.GroupBox();
+            this.speedLabel = new System.Windows.Forms.Label();
+            this.exceptionLabel = new System.Windows.Forms.Label();
             this.itemsLabel = new System.Windows.Forms.Label();
             this.statusLabel = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.folderDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.exceptionLabel = new System.Windows.Forms.Label();
-            this.speedLabel = new System.Windows.Forms.Label();
             this.optionsBox.SuspendLayout();
             this.infoBox.SuspendLayout();
             this.SuspendLayout();
@@ -61,6 +63,8 @@ namespace BackupManager
             // 
             // optionsBox
             // 
+            this.optionsBox.Controls.Add(this.viewExceptions);
+            this.optionsBox.Controls.Add(this.clearExceptions);
             this.optionsBox.Controls.Add(this.stopButton);
             this.optionsBox.Controls.Add(this.pauseButton);
             this.optionsBox.Controls.Add(this.manualBackupButton);
@@ -72,6 +76,29 @@ namespace BackupManager
             this.optionsBox.TabIndex = 1;
             this.optionsBox.TabStop = false;
             this.optionsBox.Text = "Options";
+            // 
+            // viewExceptions
+            // 
+            this.viewExceptions.BackColor = System.Drawing.Color.SeaShell;
+            this.viewExceptions.Location = new System.Drawing.Point(6, 193);
+            this.viewExceptions.Name = "viewExceptions";
+            this.viewExceptions.Size = new System.Drawing.Size(188, 23);
+            this.viewExceptions.TabIndex = 8;
+            this.viewExceptions.Text = "View Exceptions";
+            this.viewExceptions.UseVisualStyleBackColor = false;
+            this.viewExceptions.Click += new System.EventHandler(this.ViewExceptions_Click);
+            // 
+            // clearExceptions
+            // 
+            this.clearExceptions.BackColor = System.Drawing.Color.SaddleBrown;
+            this.clearExceptions.ForeColor = System.Drawing.SystemColors.HighlightText;
+            this.clearExceptions.Location = new System.Drawing.Point(6, 164);
+            this.clearExceptions.Name = "clearExceptions";
+            this.clearExceptions.Size = new System.Drawing.Size(188, 23);
+            this.clearExceptions.TabIndex = 7;
+            this.clearExceptions.Text = "Clear Exceptions";
+            this.clearExceptions.UseVisualStyleBackColor = false;
+            this.clearExceptions.Click += new System.EventHandler(this.ClearExceptions_Click);
             // 
             // stopButton
             // 
@@ -160,6 +187,24 @@ namespace BackupManager
             this.infoBox.TabStop = false;
             this.infoBox.Text = "Info";
             // 
+            // speedLabel
+            // 
+            this.speedLabel.AutoSize = true;
+            this.speedLabel.Location = new System.Drawing.Point(6, 45);
+            this.speedLabel.Name = "speedLabel";
+            this.speedLabel.Size = new System.Drawing.Size(44, 13);
+            this.speedLabel.TabIndex = 3;
+            this.speedLabel.Text = "Speed: ";
+            // 
+            // exceptionLabel
+            // 
+            this.exceptionLabel.AutoSize = true;
+            this.exceptionLabel.Location = new System.Drawing.Point(6, 58);
+            this.exceptionLabel.Name = "exceptionLabel";
+            this.exceptionLabel.Size = new System.Drawing.Size(62, 13);
+            this.exceptionLabel.TabIndex = 2;
+            this.exceptionLabel.Text = "Exceptions:";
+            // 
             // itemsLabel
             // 
             this.itemsLabel.AutoSize = true;
@@ -187,24 +232,6 @@ namespace BackupManager
             // 
             this.folderDialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
             this.folderDialog.SelectedPath = "D:\\";
-            // 
-            // exceptionLabel
-            // 
-            this.exceptionLabel.AutoSize = true;
-            this.exceptionLabel.Location = new System.Drawing.Point(6, 58);
-            this.exceptionLabel.Name = "exceptionLabel";
-            this.exceptionLabel.Size = new System.Drawing.Size(62, 13);
-            this.exceptionLabel.TabIndex = 2;
-            this.exceptionLabel.Text = "Exceptions:";
-            // 
-            // speedLabel
-            // 
-            this.speedLabel.AutoSize = true;
-            this.speedLabel.Location = new System.Drawing.Point(6, 45);
-            this.speedLabel.Name = "speedLabel";
-            this.speedLabel.Size = new System.Drawing.Size(44, 13);
-            this.speedLabel.TabIndex = 3;
-            this.speedLabel.Text = "Speed: ";
             // 
             // NewBackupForm
             // 
@@ -248,5 +275,7 @@ namespace BackupManager
         private System.Windows.Forms.FolderBrowserDialog folderDialog;
         private System.Windows.Forms.Label exceptionLabel;
         private System.Windows.Forms.Label speedLabel;
+        private System.Windows.Forms.Button clearExceptions;
+        private System.Windows.Forms.Button viewExceptions;
     }
 }
