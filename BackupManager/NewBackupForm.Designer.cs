@@ -48,6 +48,7 @@ namespace BackupManager
             this.statusLabel = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
             this.folderDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.ignoreMetaField = new System.Windows.Forms.CheckBox();
             this.optionsBox.SuspendLayout();
             this.infoBox.SuspendLayout();
             this.SuspendLayout();
@@ -63,6 +64,7 @@ namespace BackupManager
             // 
             // optionsBox
             // 
+            this.optionsBox.Controls.Add(this.ignoreMetaField);
             this.optionsBox.Controls.Add(this.viewExceptions);
             this.optionsBox.Controls.Add(this.clearExceptions);
             this.optionsBox.Controls.Add(this.stopButton);
@@ -70,6 +72,7 @@ namespace BackupManager
             this.optionsBox.Controls.Add(this.manualBackupButton);
             this.optionsBox.Controls.Add(this.cleanButton);
             this.optionsBox.Controls.Add(this.backupButton);
+            this.optionsBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.optionsBox.Location = new System.Drawing.Point(188, 13);
             this.optionsBox.Name = "optionsBox";
             this.optionsBox.Size = new System.Drawing.Size(200, 376);
@@ -80,6 +83,7 @@ namespace BackupManager
             // viewExceptions
             // 
             this.viewExceptions.BackColor = System.Drawing.Color.SeaShell;
+            this.viewExceptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.viewExceptions.Location = new System.Drawing.Point(6, 193);
             this.viewExceptions.Name = "viewExceptions";
             this.viewExceptions.Size = new System.Drawing.Size(188, 23);
@@ -91,6 +95,7 @@ namespace BackupManager
             // clearExceptions
             // 
             this.clearExceptions.BackColor = System.Drawing.Color.SaddleBrown;
+            this.clearExceptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.clearExceptions.ForeColor = System.Drawing.SystemColors.HighlightText;
             this.clearExceptions.Location = new System.Drawing.Point(6, 164);
             this.clearExceptions.Name = "clearExceptions";
@@ -103,6 +108,7 @@ namespace BackupManager
             // stopButton
             // 
             this.stopButton.BackColor = System.Drawing.Color.LightSalmon;
+            this.stopButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.stopButton.Location = new System.Drawing.Point(6, 135);
             this.stopButton.Name = "stopButton";
             this.stopButton.Size = new System.Drawing.Size(188, 23);
@@ -114,6 +120,7 @@ namespace BackupManager
             // pauseButton
             // 
             this.pauseButton.BackColor = System.Drawing.Color.PaleGoldenrod;
+            this.pauseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.pauseButton.Location = new System.Drawing.Point(6, 106);
             this.pauseButton.Name = "pauseButton";
             this.pauseButton.Size = new System.Drawing.Size(188, 23);
@@ -125,6 +132,7 @@ namespace BackupManager
             // manualBackupButton
             // 
             this.manualBackupButton.BackColor = System.Drawing.Color.Honeydew;
+            this.manualBackupButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.manualBackupButton.Location = new System.Drawing.Point(6, 48);
             this.manualBackupButton.Name = "manualBackupButton";
             this.manualBackupButton.Size = new System.Drawing.Size(188, 23);
@@ -136,6 +144,7 @@ namespace BackupManager
             // cleanButton
             // 
             this.cleanButton.BackColor = System.Drawing.Color.PowderBlue;
+            this.cleanButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cleanButton.Location = new System.Drawing.Point(6, 77);
             this.cleanButton.Name = "cleanButton";
             this.cleanButton.Size = new System.Drawing.Size(188, 23);
@@ -147,6 +156,7 @@ namespace BackupManager
             // backupButton
             // 
             this.backupButton.BackColor = System.Drawing.Color.PaleGreen;
+            this.backupButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.backupButton.Location = new System.Drawing.Point(6, 19);
             this.backupButton.Name = "backupButton";
             this.backupButton.Size = new System.Drawing.Size(188, 23);
@@ -166,6 +176,7 @@ namespace BackupManager
             // 
             // dirLabel
             // 
+            this.dirLabel.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             this.dirLabel.Location = new System.Drawing.Point(12, 399);
             this.dirLabel.Name = "dirLabel";
             this.dirLabel.Size = new System.Drawing.Size(583, 13);
@@ -180,6 +191,7 @@ namespace BackupManager
             this.infoBox.Controls.Add(this.exceptionLabel);
             this.infoBox.Controls.Add(this.itemsLabel);
             this.infoBox.Controls.Add(this.statusLabel);
+            this.infoBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.infoBox.Location = new System.Drawing.Point(395, 13);
             this.infoBox.Name = "infoBox";
             this.infoBox.Size = new System.Drawing.Size(200, 376);
@@ -233,6 +245,17 @@ namespace BackupManager
             this.folderDialog.RootFolder = System.Environment.SpecialFolder.MyComputer;
             this.folderDialog.SelectedPath = "D:\\";
             // 
+            // ignoreMetaField
+            // 
+            this.ignoreMetaField.AutoSize = true;
+            this.ignoreMetaField.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ignoreMetaField.Location = new System.Drawing.Point(6, 222);
+            this.ignoreMetaField.Name = "ignoreMetaField";
+            this.ignoreMetaField.Size = new System.Drawing.Size(103, 17);
+            this.ignoreMetaField.TabIndex = 9;
+            this.ignoreMetaField.Text = "Ignore .meta files";
+            this.ignoreMetaField.UseVisualStyleBackColor = true;
+            // 
             // NewBackupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -250,6 +273,7 @@ namespace BackupManager
             this.ShowIcon = false;
             this.Text = "Backup Assistant";
             this.optionsBox.ResumeLayout(false);
+            this.optionsBox.PerformLayout();
             this.infoBox.ResumeLayout(false);
             this.infoBox.PerformLayout();
             this.ResumeLayout(false);
@@ -277,5 +301,6 @@ namespace BackupManager
         private System.Windows.Forms.Label speedLabel;
         private System.Windows.Forms.Button clearExceptions;
         private System.Windows.Forms.Button viewExceptions;
+        private System.Windows.Forms.CheckBox ignoreMetaField;
     }
 }

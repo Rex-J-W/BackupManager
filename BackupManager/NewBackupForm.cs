@@ -105,6 +105,9 @@ namespace BackupManager
             manualBackupButton.Enabled = false;
             cleanButton.Enabled = false;
 
+            bool ignoreMetaExt = ignoreMetaField.Checked;
+            ignoreMetaField.Enabled = false;
+
             selectedSrc = backupSrc;
             curDir = backupSrc;
 
@@ -126,7 +129,7 @@ namespace BackupManager
                             statusMsg = "Searching";
                             itemCount++;
                             string destFile = file.Replace(backupSrc, backupDest);
-                            if (CanCopyFile(file, destFile))
+                            if (CanCopyFile(file, destFile, ignoreMetaExt))
                             {
                                 statusMsg = "Copying";
                                 await Task.Delay(1);
@@ -161,7 +164,7 @@ namespace BackupManager
                                 statusMsg = "Searching";
                                 itemCount++;
                                 string destFile = file.Replace(backupSrc, backupDest);
-                                if (CanCopyFile(file, destFile))
+                                if (CanCopyFile(file, destFile, ignoreMetaExt))
                                 {
                                     statusMsg = "Copying";
                                     await Task.Delay(1);
@@ -177,6 +180,7 @@ namespace BackupManager
             }
 
             statusMsg = "Finished";
+            ignoreMetaField.Enabled = true;
             cleanButton.Enabled = true;
             manualBackupButton.Enabled = true;
             backupButton.Enabled = true;
@@ -193,6 +197,9 @@ namespace BackupManager
             backupButton.Enabled = false;
             manualBackupButton.Enabled = false;
             cleanButton.Enabled = false;
+
+            bool ignoreMetaExt = ignoreMetaField.Checked;
+            ignoreMetaField.Enabled = false;
 
             DialogResult folderResult = folderDialog.ShowDialog();
             if (folderResult == DialogResult.OK &&
@@ -213,7 +220,7 @@ namespace BackupManager
                         statusMsg = "Searching";
                         itemCount++;
                         string destFile = file.Replace(backupSrc, backupDest);
-                        if (CanCopyFile(file, destFile))
+                        if (CanCopyFile(file, destFile, ignoreMetaExt))
                         {
                             statusMsg = "Copying";
                             await Task.Delay(1);
@@ -244,7 +251,7 @@ namespace BackupManager
                                 statusMsg = "Searching";
                                 itemCount++;
                                 string destFile = file.Replace(backupSrc, backupDest);
-                                if (CanCopyFile(file, destFile))
+                                if (CanCopyFile(file, destFile, ignoreMetaExt))
                                 {
                                     statusMsg = "Copying";
                                     await Task.Delay(1);
@@ -281,7 +288,7 @@ namespace BackupManager
                                     statusMsg = "Searching";
                                     itemCount++;
                                     string destFile = file.Replace(backupSrc, backupDest);
-                                    if (CanCopyFile(file, destFile))
+                                    if (CanCopyFile(file, destFile, ignoreMetaExt))
                                     {
                                         statusMsg = "Copying";
                                         await Task.Delay(1);
@@ -298,6 +305,7 @@ namespace BackupManager
             }
 
             statusMsg = "Finished";
+            ignoreMetaField.Enabled = true;
             cleanButton.Enabled = true;
             manualBackupButton.Enabled = true;
             backupButton.Enabled = true;
@@ -305,9 +313,14 @@ namespace BackupManager
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool CanCopyFile(string srcFile, string destFile)
+        private bool CanCopyFile(string srcFile, string destFile, bool ignoreMeta)
         {
-            if (Path.GetExtension(srcFile) == ".dll") return false;
+            if (Path.GetExtension(srcFile) == ".dll" ||
+                (ignoreMeta && Path.GetExtension(srcFile) == ".meta"))
+            {
+                ExceptionHandler(new Exception(Path.GetExtension(srcFile)));
+                return false;
+            }
             if (File.Exists(destFile))
             {
                 if (new FileInfo(srcFile).Length != new FileInfo(destFile).Length) return true;
@@ -326,6 +339,7 @@ namespace BackupManager
             backupButton.Enabled = false;
             manualBackupButton.Enabled = false;
             cleanButton.Enabled = false;
+            ignoreMetaField.Enabled = false;
 
             selectedSrc = backupDest;
             curDir = backupDest;
@@ -382,6 +396,7 @@ namespace BackupManager
             }
 
             statusMsg = "Finished";
+            ignoreMetaField.Enabled = true;
             cleanButton.Enabled = true;
             manualBackupButton.Enabled = true;
             backupButton.Enabled = true;
