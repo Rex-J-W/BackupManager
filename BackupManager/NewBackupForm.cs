@@ -316,11 +316,7 @@ namespace BackupManager
         private bool CanCopyFile(string srcFile, string destFile, bool ignoreMeta)
         {
             if (Path.GetExtension(srcFile) == ".dll" ||
-                (ignoreMeta && Path.GetExtension(srcFile) == ".meta"))
-            {
-                ExceptionHandler(new Exception(Path.GetExtension(srcFile)));
-                return false;
-            }
+                (ignoreMeta && Path.GetExtension(srcFile) == ".meta")) return false;
             if (File.Exists(destFile))
             {
                 if (new FileInfo(srcFile).Length != new FileInfo(destFile).Length) return true;
